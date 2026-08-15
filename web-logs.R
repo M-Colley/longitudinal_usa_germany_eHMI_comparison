@@ -9,11 +9,13 @@ if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable())
 }
 
 
+library(easystats)
+
 library(colleyRstats)
 colleyRstats::colleyRstats_setup()
 
-
 library(ggforce)
+
 
 getwd()
 
@@ -200,7 +202,7 @@ anovaBF(number_of_crashes ~ ehmi * study, whichRandom = "probandenID", data = ma
 anovaBF(number_of_crashes ~ rep_exposure * study, whichRandom = "probandenID", data = main_Total_germany) |>
   bayesfactor_models() |>
   report()
-main_Total_germany %>% ggplot() +
+main_Total_germany |> ggplot() +
   aes(x = study, y = number_of_crashes, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Number of Collisions") +
@@ -217,7 +219,7 @@ main_Total_germany %>% ggplot() +
 
 temp <- main_Total_germany
 temp$study <- gsub("WEB", "Online-Based", temp$study)
-temp %>% ggplot() +
+temp |> ggplot() +
   aes(x = rep_exposure, y = number_of_crashes, fill = study, colour = study, group = study) +
   scale_colour_see() +
   ylab("Number of Collisions") +
@@ -241,7 +243,7 @@ anovaBF(duration_sidewalk_start ~ ehmi * study, whichRandom = "probandenID", dat
 anovaBF(duration_sidewalk_start ~ rep_exposure * study, whichRandom = "probandenID", data = main_Total_germany) |>
   bayesfactor_models() |>
   report()
-main_Total_germany %>% ggplot() +
+main_Total_germany |> ggplot() +
   aes(x = study, y = duration_sidewalk_start, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Duration Sidewalk Start") +
@@ -254,7 +256,7 @@ main_Total_germany %>% ggplot() +
 
 temp <- main_Total_germany
 temp$study <- gsub("WEB", "Online-Based", temp$study)
-temp %>% ggplot() +
+temp |> ggplot() +
   aes(x = rep_exposure, y = duration_sidewalk_start, fill = study, colour = study, group = study) +
   scale_colour_see() +
   ylab("Duration Sidewalk Start") +
@@ -279,7 +281,7 @@ anovaBF(duration_first_lane ~ ehmi * study, whichRandom = "probandenID", data = 
 anovaBF(duration_first_lane ~ rep_exposure * study, whichRandom = "probandenID", data = main_Total_germany) |>
   bayesfactor_models() |>
   report()
-main_Total_germany %>% ggplot() +
+main_Total_germany |> ggplot() +
   aes(x = study, y = duration_first_lane, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Duration First Lane") +
@@ -292,7 +294,7 @@ main_Total_germany %>% ggplot() +
 
 temp <- main_Total_germany
 temp$study <- gsub("WEB", "Online-Based", temp$study)
-temp %>% ggplot() +
+temp |> ggplot() +
   aes(x = rep_exposure, y = duration_first_lane, fill = study, colour = study, group = study) +
   scale_colour_see() +
   ylab("Duration First Lane") +
@@ -315,7 +317,7 @@ anovaBF(duration_second_lane ~ ehmi * study, whichRandom = "probandenID", data =
 anovaBF(duration_second_lane ~ rep_exposure * study, whichRandom = "probandenID", data = main_Total_germany) |>
   bayesfactor_models() |>
   report()
-main_Total_germany %>% ggplot() +
+main_Total_germany |> ggplot() +
   aes(x = study, y = duration_second_lane, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Duration Second Lane") +
@@ -328,7 +330,7 @@ main_Total_germany %>% ggplot() +
 
 temp <- main_Total_germany
 temp$study <- gsub("WEB", "Online-Based", temp$study)
-temp %>% ggplot() +
+temp |> ggplot() +
   aes(x = rep_exposure, y = duration_second_lane, fill = study, colour = study, group = study) +
   scale_colour_see() +
   ylab("Duration Second Lane") +
@@ -350,7 +352,7 @@ anovaBF(total_duration_calc ~ ehmi * study, whichRandom = "probandenID", data = 
 anovaBF(total_duration_calc ~ rep_exposure * study, whichRandom = "probandenID", data = main_Total_germany) |>
   bayesfactor_models() |>
   report()
-main_Total_germany %>% ggplot() +
+main_Total_germany |> ggplot() +
   aes(x = study, y = total_duration_calc, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Total Duration") +
@@ -363,7 +365,7 @@ main_Total_germany %>% ggplot() +
 
 temp <- main_Total_germany
 temp$study <- gsub("WEB", "Online-Based", temp$study)
-temp %>% ggplot() +
+temp |> ggplot() +
   aes(x = rep_exposure, y = total_duration_calc, fill = study, colour = study, group = study) +
   scale_colour_see() +
   ylab("Total Duration") +
@@ -377,7 +379,7 @@ temp %>% ggplot() +
 
 
 #### Crashes ####
-checkAssumptionsForAnovaThreeFactors(data = main_Total_web, y = "number_of_crashes", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "rep_exposure")
+checkAssumptionsForAnova(data = main_Total_web, y = "number_of_crashes", factors = c("culturalBackground", "ehmi", "rep_exposure"))
 modelART <- art(number_of_crashes ~ culturalBackground * ehmi * rep_exposure + Error(subject_id / (ehmi * rep_exposure)), data = main_Total_web) |> anova()
 reportART(model = modelART, dv = "number of collisions")
 reportMeanAndSD(main_df = main_Total_web, iv = "culturalBackground", dv = "number_of_crashes")
@@ -385,7 +387,7 @@ reportMeanAndSD(main_df = main_Total_web, iv = "ehmi", dv = "number_of_crashes")
 d <- dunnTest(number_of_crashes ~ rep_exposure, data = main_Total_web, method = "holm", two.sided = FALSE)
 reportDunnTest(main_df = main_Total_web, d = d, iv = "rep_exposure", dv = "number_of_crashes")
 
-main_Total_web %>% ggplot() +
+main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = number_of_crashes, fill = culturalBackground, colour = culturalBackground, group = culturalBackground) +
   scale_colour_see() +
   ylab("Number of Collisions") +
@@ -394,10 +396,10 @@ main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "point", size = 4.0) +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05)) # 95 % mean_cl_boot is 95% confidence intervals
-ggsave("plots/result_web_usa_ger_collision_1.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_collision_1.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
-main_Total_web %>% ggplot() +
+main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = number_of_crashes, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Number of Collisions") +
@@ -406,10 +408,10 @@ main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "point", size = 4.0) +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05)) # 95 % mean_cl_boot is 95% confidence intervals
-ggsave("plots/result_web_usa_ger_collision_2.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_collision_2.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
-p <- main_Total_web %>% ggplot() +
+p <- main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = number_of_crashes, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Number of Collisions") +
@@ -419,24 +421,24 @@ p <- main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = .05)) # 95 % mean_cl_boot is 95% confidence intervals
 p + facet_grid(~culturalBackground)
-ggsave("plots/result_web_usa_ger_collision_3.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_collision_3.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 #### duration_sidewalk_start ####
-checkAssumptionsForAnovaThreeFactors(data = main_Total_web, y = "duration_sidewalk_start", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "rep_exposure")
+checkAssumptionsForAnova(data = main_Total_web, y = "duration_sidewalk_start", factors = c("culturalBackground", "ehmi", "rep_exposure"))
 modelART <- art(duration_sidewalk_start ~ culturalBackground * ehmi * rep_exposure + Error(subject_id / (ehmi * rep_exposure)), data = main_Total_web) |> anova()
 reportART(model = modelART, dv = "duration_sidewalk_start")
 reportMeanAndSD(main_df = main_Total_web, iv = "ehmi", dv = "duration_sidewalk_start")
 
 #### duration_first_lane ####
-checkAssumptionsForAnovaThreeFactors(data = main_Total_web, y = "duration_first_lane", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "rep_exposure")
+checkAssumptionsForAnova(data = main_Total_web, y = "duration_first_lane", factors = c("culturalBackground", "ehmi", "rep_exposure"))
 modelART <- art(duration_first_lane ~ culturalBackground * ehmi * rep_exposure + Error(subject_id / (ehmi * rep_exposure)), data = main_Total_web) |> anova()
 reportART(model = modelART, dv = "duration_first_lane")
 reportMeanAndSD(main_df = main_Total_web, iv = "ehmi", dv = "duration_first_lane")
 d <- dunnTest(duration_first_lane ~ rep_exposure, data = main_Total_web, method = "holm", two.sided = FALSE)
 reportDunnTest(main_df = main_Total_web, d = d, iv = "rep_exposure", dv = "duration_first_lane")
 
-main_Total_web %>% ggplot() +
+main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = duration_first_lane, fill = culturalBackground, colour = culturalBackground, group = culturalBackground) +
   scale_colour_see() +
   ylab("Duration - First Lane") +
@@ -445,9 +447,9 @@ main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "point", size = 4.0) +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05)) # 95 % mean_cl_boot is 95% confidence intervals
-ggsave("plots/result_web_usa_ger_firstLane_1.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_firstLane_1.pdf", width = 12, height = 9, device = cairo_pdf)
 
-main_Total_web %>% ggplot() +
+main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = duration_first_lane, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Duration - First Lane") +
@@ -456,10 +458,10 @@ main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "point", size = 4.0) +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05)) # 95 % mean_cl_boot is 95% confidence intervals
-ggsave("plots/result_web_usa_ger_firstLane_2.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_firstLane_2.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
-p <- main_Total_web %>% ggplot() +
+p <- main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = duration_first_lane, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Duration - First Lane") +
@@ -469,15 +471,15 @@ p <- main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .1, position = position_dodge(width = .1)) # 95 % mean_cl_boot is 95% confidence intervals
 p + facet_grid(~culturalBackground)
-ggsave("plots/result_web_usa_ger_firstLane_3.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_firstLane_3.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
 #### duration_second_lane ####
-checkAssumptionsForAnovaThreeFactors(data = main_Total_web, y = "duration_second_lane", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "rep_exposure")
+checkAssumptionsForAnova(data = main_Total_web, y = "duration_second_lane", factors = c("culturalBackground", "ehmi", "rep_exposure"))
 modelART <- art(duration_second_lane ~ culturalBackground * ehmi * rep_exposure + Error(subject_id / (ehmi * rep_exposure)), data = main_Total_web) |> anova()
 reportART(model = modelART, dv = "duration_second_lane")
-main_Total_web %>% ggplot() +
+main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = duration_second_lane, fill = culturalBackground, colour = culturalBackground, group = culturalBackground) +
   scale_colour_see() +
   ylab("Duration - Second Lane") +
@@ -486,11 +488,11 @@ main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "point", size = 4.0) +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5, ) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05)) # 95 % mean_cl_boot is 95% confidence intervals
-ggsave("plots/result_web_usa_ger_second_lane_1.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_second_lane_1.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
-main_Total_web %>% ggplot() +
+main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = duration_second_lane, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Duration Second Lane") +
@@ -499,21 +501,21 @@ main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "point", size = 4.0) +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5, ) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05)) # 95 % mean_cl_boot is 95% confidence intervals
-ggsave("plots/result_web_usa_ger_second_lane_2.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_second_lane_2.pdf", width = 12, height = 9, device = cairo_pdf)
 
 #### duration_sidewalk_park ####
-checkAssumptionsForAnovaThreeFactors(data = main_Total_web, y = "duration_sidewalk_park", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "rep_exposure")
+checkAssumptionsForAnova(data = main_Total_web, y = "duration_sidewalk_park", factors = c("culturalBackground", "ehmi", "rep_exposure"))
 modelART <- art(duration_sidewalk_park ~ culturalBackground * ehmi * rep_exposure + Error(subject_id / (ehmi * rep_exposure)), data = main_Total_web) |> anova()
 reportART(model = modelART, dv = "duration_sidewalk_park")
 
 
 #### total_duration ####
-checkAssumptionsForAnovaThreeFactors(data = main_Total_web, y = "total_duration_calc", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "rep_exposure")
+checkAssumptionsForAnova(data = main_Total_web, y = "total_duration_calc", factors = c("culturalBackground", "ehmi", "rep_exposure"))
 modelART <- art(total_duration_calc ~ culturalBackground * ehmi * rep_exposure + Error(subject_id / (ehmi * rep_exposure)), data = main_Total_web) |> anova()
 reportART(model = modelART, dv = "total_duration_calc")
 reportMeanAndSD(main_df = main_Total_web, iv = "culturalBackground", dv = "total_duration_calc")
 
-main_Total_web %>% ggplot() +
+main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = total_duration_calc, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Total Crossing Time") +
@@ -522,10 +524,10 @@ main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "point", size = 4.0) +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5, ) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05)) # 95 % mean_cl_boot is 95% confidence intervals
-ggsave("plots/result_web_usa_ger_total_time_1.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_total_time_1.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
-p <- main_Total_web %>% ggplot() +
+p <- main_Total_web |> ggplot() +
   aes(x = rep_exposure, y = total_duration_calc, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Total Crossing Time") +
@@ -535,7 +537,7 @@ p <- main_Total_web %>% ggplot() +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5, ) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .1, position = position_dodge(width = .1)) # 95 % mean_cl_boot is 95% confidence intervals
 p + facet_grid(~culturalBackground)
-ggsave("plots/result_web_usa_ger_total_time_2.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_usa_ger_total_time_2.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 #### Position ####
@@ -551,7 +553,7 @@ main_Position_filterd_repExp_ger <- count(main_Position_reduced_repExp_ger, xPos
 
 ### Position: Repeated Exposure ONE ###
 main_Position_filterd_ger_repExp_One <- filter(main_Position_filterd_repExp_ger, xPos_round_ger < 95 & xPos_round_ger > 92.5 & n > 1 & n != 523 & zPos_round_ger > 157.8 & zPos_round_ger <= 170.2 & repeatedExp_ger == "ONE")
-main_Position_filterd_ger_repExp_One %>% ggplot() +
+main_Position_filterd_ger_repExp_One |> ggplot() +
   aes(x = xPos_round_ger, y = zPos_round_ger, size = n) +
   geom_point(alpha = 1, color = "#4575B4") +
   scale_size(range = c(.1, 15)) +
@@ -568,13 +570,13 @@ main_Position_filterd_ger_repExp_One %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: One") +
   ylab("Walking Direction →")
-ggsave("plots/result_web_waiting_behavior_germany_1.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_waiting_behavior_germany_1.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
 ## Position: Repeated Exposure TWO ##
 main_Position_filterd_ger_repExp_Two <- filter(main_Position_filterd_repExp_ger, xPos_round_ger < 95 & xPos_round_ger > 92.5 & n > 1 & zPos_round_ger > 157.8 & zPos_round_ger <= 170.2 & repeatedExp_ger == "TWO")
-main_Position_filterd_ger_repExp_Two %>% ggplot() +
+main_Position_filterd_ger_repExp_Two |> ggplot() +
   aes(x = xPos_round_ger, y = zPos_round_ger, size = n) +
   geom_point(alpha = 1, color = "#4575B4") +
   scale_size(range = c(.1, 15)) +
@@ -591,11 +593,11 @@ main_Position_filterd_ger_repExp_Two %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: Two") +
   ylab("Walking Direction →")
-ggsave("plots/result_web_waiting_behavior_germany_2.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_waiting_behavior_germany_2.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 main_Position_filterd_repExp_Three <- filter(main_Position_filterd_repExp_ger, xPos_round_ger < 95 & xPos_round_ger > 92.5 & n > 1 & zPos_round_ger > 157.8 & zPos_round_ger <= 170.2 & repeatedExp_ger == "THREE")
-main_Position_filterd_repExp_Three %>% ggplot() +
+main_Position_filterd_repExp_Three |> ggplot() +
   aes(x = xPos_round_ger, y = zPos_round_ger, size = n) +
   geom_point(alpha = 1, color = "#4575B4") +
   scale_size(range = c(.1, 15)) +
@@ -612,7 +614,7 @@ main_Position_filterd_repExp_Three %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: Three") +
   ylab("Walking Direction →")
-ggsave("plots/result_web_waiting_behavior_germany_3.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_waiting_behavior_germany_3.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 ##### Position USA #####
@@ -626,7 +628,7 @@ main_Position_filterd_repExp_usa <- count(main_Position_reduced_repExp_usa, xPos
 
 ## Position: Repeated Exposure ONE ##
 main_Position_filterd_usa_repExp_One <- filter(main_Position_filterd_repExp_usa, xPos_round_usa <= 95 & xPos_round_usa > 92.5 & n > 1 & n != 489 & zPos_round_usa > 157.8 & zPos_round_usa <= 170.2 & repeatedExp_usa == "ONE")
-main_Position_filterd_usa_repExp_One %>% ggplot() +
+main_Position_filterd_usa_repExp_One |> ggplot() +
   aes(x = xPos_round_usa, y = zPos_round_usa, size = n) +
   geom_point(alpha = 1, color = "#4575B4") +
   scale_size(range = c(.1, 15)) +
@@ -643,12 +645,12 @@ main_Position_filterd_usa_repExp_One %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: One") +
   ylab("Walking Direction →")
-ggsave("plots/result_web_waiting_behavior_usa_1.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_waiting_behavior_usa_1.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 ## Position: Repeated Exposure TWO ##
 main_Position_filterd_usa_repExp_Two <- filter(main_Position_filterd_repExp_usa, xPos_round_usa < 95 & xPos_round_usa > 92.5 & n > 1 & n != 165 & n != 242 & zPos_round_usa > 157.8 & zPos_round_usa <= 170.2 & repeatedExp_usa == "TWO")
-main_Position_filterd_usa_repExp_Two %>% ggplot() +
+main_Position_filterd_usa_repExp_Two |> ggplot() +
   aes(x = xPos_round_usa, y = zPos_round_usa, size = n) +
   geom_point(alpha = 1, color = "#4575B4") +
   scale_size(range = c(.1, 15)) +
@@ -665,13 +667,13 @@ main_Position_filterd_usa_repExp_Two %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: Two") +
   ylab("Walking Direction →")
-ggsave("plots/result_web_waiting_behavior_usa_2.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_waiting_behavior_usa_2.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
 
 main_Position_filterd_repExp_Three <- filter(main_Position_filterd_repExp_usa, xPos_round_usa < 95 & xPos_round_usa > 92.5 & n > 1 & zPos_round_usa > 157.8 & zPos_round_usa <= 170.2 & repeatedExp_usa == "THREE")
-main_Position_filterd_repExp_Three %>% ggplot() +
+main_Position_filterd_repExp_Three |> ggplot() +
   aes(x = xPos_round_usa, y = zPos_round_usa, size = n) +
   geom_point(alpha = 1, color = "#4575B4") +
   scale_size(range = c(.1, 15)) +
@@ -688,7 +690,7 @@ main_Position_filterd_repExp_Three %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: Three") +
   ylab("Walking Direction →")
-ggsave("plots/result_web_waiting_behavior_usa_3.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_waiting_behavior_usa_3.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 # Position Checkpoint xPos = 92.95 || zPos = 158.29 || Scale: 4 x 20 x 4
@@ -706,7 +708,7 @@ total_duration_calc_ld <- df_position_germany$total_duration_calc
 mp_reduced_ld <- data.frame(xPos_round_ld, zPos_round_ld, repeatedExp_ld, subjectID_ld, condition_id_ld)
 
 mp_filtered_ld_SC1_One <- filter(mp_reduced_ld, repeatedExp_ld == "ONE" & condition_id_ld == "SCENARIO_2")
-mp_filtered_ld_SC1_One %>% ggplot() +
+mp_filtered_ld_SC1_One |> ggplot() +
   geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
   aes(x = xPos_round_ld, y = zPos_round_ld, color = factor(subjectID_ld), fill = subjectID_ld, group = subjectID_ld) +
   geom_path() +
@@ -723,11 +725,11 @@ mp_filtered_ld_SC1_One %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: One") +
   ylab("Walking Direction →")
-ggsave("plots/result_walking_behavior_sc2_rep1_germany.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_walking_behavior_sc2_rep1_germany.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 mp_filtered_ld_SC2_One <- filter(mp_reduced_ld, xPos_round_ld > 90.9 & repeatedExp_ld == "ONE" & condition_id_ld == "SCENARIO_4")
-mp_filtered_ld_SC2_One %>% ggplot() +
+mp_filtered_ld_SC2_One |> ggplot() +
   geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
   aes(x = xPos_round_ld, y = zPos_round_ld, color = factor(subjectID_ld), fill = subjectID_ld, group = subjectID_ld) +
   geom_path() +
@@ -744,11 +746,11 @@ mp_filtered_ld_SC2_One %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: One") +
   ylab("Walking Direction →")
-ggsave("plots/result_walking_behavior_sc4_rep1_germany.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_walking_behavior_sc4_rep1_germany.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 mp_filtered_ld_SC1_Two <- filter(mp_reduced_ld, subjectID_ld != "0c415075-c031-4a7f-9b32-f16fd60ab61f" & repeatedExp_ld == "TWO" & condition_id_ld == "SCENARIO_2")
-mp_filtered_ld_SC1_Two %>% ggplot() +
+mp_filtered_ld_SC1_Two |> ggplot() +
   geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
   aes(x = xPos_round_ld, y = zPos_round_ld, color = factor(subjectID_ld), fill = subjectID_ld, group = subjectID_ld) +
   geom_path() +
@@ -765,11 +767,11 @@ mp_filtered_ld_SC1_Two %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: Two") +
   ylab("Walking Direction →")
-ggsave("plots/result_walking_behavior_sc2_rep2_germany.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_walking_behavior_sc2_rep2_germany.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 mp_filtered_ld_SC2_Two <- filter(mp_reduced_ld, repeatedExp_ld == "TWO" & condition_id_ld == "SCENARIO_4")
-mp_filtered_ld_SC2_Two %>% ggplot() +
+mp_filtered_ld_SC2_Two |> ggplot() +
   geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
   aes(x = xPos_round_ld, y = zPos_round_ld, color = factor(subjectID_ld), fill = subjectID_ld, group = subjectID_ld) +
   geom_path() +
@@ -786,12 +788,12 @@ mp_filtered_ld_SC2_Two %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: Two") +
   ylab("Walking Direction →")
-ggsave("plots/result_walking_behavior_sc4_rep2_germany.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_walking_behavior_sc4_rep2_germany.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
 mp_filtered_ld_SC1_Three <- filter(mp_reduced_ld, xPos_round_ld < 98.75 & zPos_round_ld > 157.8 & repeatedExp_ld == "THREE" & condition_id_ld == "SCENARIO_2")
-mp_filtered_ld_SC1_Three %>% ggplot() +
+mp_filtered_ld_SC1_Three |> ggplot() +
   geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
   aes(x = xPos_round_ld, y = zPos_round_ld, color = factor(subjectID_ld), fill = subjectID_ld, group = subjectID_ld) +
   geom_path() +
@@ -808,11 +810,11 @@ mp_filtered_ld_SC1_Three %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: Three") +
   ylab("Walking Direction →")
-ggsave("plots/result_walking_behavior_sc2_rep3_germany.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_walking_behavior_sc2_rep3_germany.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 mp_filtered_ld_SC2_Three <- filter(mp_reduced_ld, xPos_round_ld > 91.25 & zPos_round_ld > 157.8 & repeatedExp_ld == "THREE" & condition_id_ld == "SCENARIO_4")
-mp_filtered_ld_SC2_Three %>% ggplot() +
+mp_filtered_ld_SC2_Three |> ggplot() +
   geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
   aes(x = xPos_round_ld, y = zPos_round_ld, color = factor(subjectID_ld), fill = subjectID_ld, group = subjectID_ld) +
   geom_path() +
@@ -829,7 +831,7 @@ mp_filtered_ld_SC2_Three %>% ggplot() +
   geom_hline(yintercept = 158.54, color = "#A9A9A9") +
   xlab("Repeated Exposure: Three") +
   ylab("Walking Direction →")
-ggsave("plots/result_walking_behavior_sc4_rep3_germany.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_walking_behavior_sc4_rep3_germany.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
@@ -843,28 +845,28 @@ df_eye_gaze_ger$Time_Pos <- as.POSIXct(df_eye_gaze_ger$t, format = "%d.%m.%Y %H:
 # df_eye_gaze_ger$Time_Pos
 # format(df_eye_gaze_ger$Time_Pos, "%Y-%m-%d %H:%M:%OS4")
 
-# df_null <- main_logs %>% group_by(participant_id, condition_id) %>% summarise(sumFixationsNull = sum(area_of_interest == "Nihil"))
+# df_null <- main_logs |> group_by(participant_id, condition_id) |> summarise(sumFixationsNull = sum(area_of_interest == "Nihil"))
 
 
-df_general_car <- df_eye_gaze_ger %>%
-  group_by(subject_id, scenario_id, rep_exposure) %>%
+df_general_car <- df_eye_gaze_ger |>
+  group_by(subject_id, scenario_id, rep_exposure) |>
   summarise(sumFixationsCar = sum(area_of_interest == "general_car"))
-df_av_body <- df_eye_gaze_ger %>%
-  group_by(subject_id, scenario_id, rep_exposure) %>%
+df_av_body <- df_eye_gaze_ger |>
+  group_by(subject_id, scenario_id, rep_exposure) |>
   summarise(sumFixationsAVBody = sum(area_of_interest == "av_body"))
-df_av_ehmi <- df_eye_gaze_ger %>%
-  group_by(subject_id, scenario_id, rep_exposure) %>%
+df_av_ehmi <- df_eye_gaze_ger |>
+  group_by(subject_id, scenario_id, rep_exposure) |>
   summarise(sumFixationsAVeHMI = sum(area_of_interest == "av_ehmi"))
 
-test1 <- df_eye_gaze_ger %>%
-  group_by(subject_id, scenario_id, rep_exposure) %>%
+test1 <- df_eye_gaze_ger |>
+  group_by(subject_id, scenario_id, rep_exposure) |>
   summarise(duration = last(Time_Pos) - first(Time_Pos)) # difftime(tail(.$Time_Pos, n=1),.$Time_Pos[1])
 test1$totalFixations <- test1$duration * 50 # as 50 Hz was used
 test1$totalFixations <- as.numeric(test1$totalFixations)
 test1$totalFixations <- round(test1$totalFixations, digits = 0)
 
-test <- merge(df_general_car, df_av_body, by = c("subject_id", "scenario_id", "rep_exposure")) %>%
-  merge(., df_av_ehmi, by = c("subject_id", "scenario_id", "rep_exposure")) %>%
+test <- merge(df_general_car, df_av_body, by = c("subject_id", "scenario_id", "rep_exposure")) |>
+  merge(., df_av_ehmi, by = c("subject_id", "scenario_id", "rep_exposure")) |>
   merge(., test1, by = c("subject_id", "scenario_id", "rep_exposure"))
 
 
@@ -894,7 +896,7 @@ data_long$aoi <- gsub("_Percentage", "", data_long$aoi)
 
 data_long$aoi <- as.factor(data_long$aoi)
 
-data_long %>% ggplot() +
+data_long |> ggplot() +
   aes(x = scenario_id, y = measurement, fill = aoi, colour = aoi, group = aoi) +
   scale_colour_see() +
   ylab("Percentage Fixation") +
@@ -906,7 +908,7 @@ data_long %>% ggplot() +
 
 data_long_1 <- subset(data_long, aoi != "Null")
 
-data_long_1 %>% ggplot() +
+data_long_1 |> ggplot() +
   aes(x = scenario_id, y = measurement * 100, fill = aoi, colour = aoi, group = aoi) +
   scale_colour_see() +
   ylab("Percentage Fixation - Excluded Null") +
@@ -916,14 +918,14 @@ data_long_1 %>% ggplot() +
   scale_shape_manual(values = 1:nlevels(data_long_1$aoi)) +
   stat_summary(fun = mean, geom = "line", size = 1, aes(linetype = aoi)) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = .05))
-# ggsave("plots/Fixation_without_null.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+# ggsave("plots/Fixation_without_null.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 # remove when was not visible
 data_long_1 <- subset(data_long_1, subset = measurement != 0)
 
 
-data_long_1 %>% ggplot() +
+data_long_1 |> ggplot() +
   aes(x = scenario_id, y = measurement * 100, colour = aoi, group = aoi) +
   scale_colour_see() +
   ylab("Percentage Fixation  Excluded Null") +
@@ -935,7 +937,7 @@ data_long_1 %>% ggplot() +
   stat_summary(fun = mean, geom = "line", size = 1, aes(linetype = aoi)) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .1) +
   scale_x_discrete(labels = c("SCENARIO_2" = "With eHMI", "SCENARIO_4" = "Without eHMI"))
-# ggsave("plots/Fixation_without_null_no_zero.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+# ggsave("plots/Fixation_without_null_no_zero.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
@@ -950,28 +952,28 @@ df_eye_gaze_usa$Time_Pos <- as.POSIXct(df_eye_gaze_usa$t, format = "%d.%m.%Y %H:
 # df_eye_gaze_usa$Time_Pos
 # format(df_eye_gaze_usa$Time_Pos, "%Y-%m-%d %H:%M:%OS4")
 
-# df_null <- main_logs %>% group_by(participant_id, condition_id) %>% summarise(sumFixationsNull = sum(area_of_interest == "Nihil"))
+# df_null <- main_logs |> group_by(participant_id, condition_id) |> summarise(sumFixationsNull = sum(area_of_interest == "Nihil"))
 
 
-df_general_car <- df_eye_gaze_usa %>%
-  group_by(subject_id, scenario_id, rep_exposure) %>%
+df_general_car <- df_eye_gaze_usa |>
+  group_by(subject_id, scenario_id, rep_exposure) |>
   summarise(sumFixationsCar = sum(area_of_interest == "general_car"))
-df_av_body <- df_eye_gaze_usa %>%
-  group_by(subject_id, scenario_id, rep_exposure) %>%
+df_av_body <- df_eye_gaze_usa |>
+  group_by(subject_id, scenario_id, rep_exposure) |>
   summarise(sumFixationsAVBody = sum(area_of_interest == "av_body"))
-df_av_ehmi <- df_eye_gaze_usa %>%
-  group_by(subject_id, scenario_id, rep_exposure) %>%
+df_av_ehmi <- df_eye_gaze_usa |>
+  group_by(subject_id, scenario_id, rep_exposure) |>
   summarise(sumFixationsAVeHMI = sum(area_of_interest == "av_ehmi"))
 
-test1 <- df_eye_gaze_usa %>%
-  group_by(subject_id, scenario_id, rep_exposure) %>%
+test1 <- df_eye_gaze_usa |>
+  group_by(subject_id, scenario_id, rep_exposure) |>
   summarise(duration = last(Time_Pos) - first(Time_Pos)) # difftime(tail(.$Time_Pos, n=1),.$Time_Pos[1])
 test1$totalFixations <- test1$duration * 50 # as 50 Hz was used
 test1$totalFixations <- as.numeric(test1$totalFixations)
 test1$totalFixations <- round(test1$totalFixations, digits = 0)
 
-test <- merge(df_general_car, df_av_body, by = c("subject_id", "scenario_id", "rep_exposure")) %>%
-  merge(., df_av_ehmi, by = c("subject_id", "scenario_id", "rep_exposure")) %>%
+test <- merge(df_general_car, df_av_body, by = c("subject_id", "scenario_id", "rep_exposure")) |>
+  merge(., df_av_ehmi, by = c("subject_id", "scenario_id", "rep_exposure")) |>
   merge(., test1, by = c("subject_id", "scenario_id", "rep_exposure"))
 
 
@@ -1001,7 +1003,7 @@ data_long$aoi <- gsub("_Percentage", "", data_long$aoi)
 
 data_long$aoi <- as.factor(data_long$aoi)
 
-data_long %>% ggplot() +
+data_long |> ggplot() +
   aes(x = scenario_id, y = measurement, fill = aoi, colour = aoi, group = aoi) +
   scale_colour_see() +
   ylab("Percentage Fixation") +
@@ -1013,7 +1015,7 @@ data_long %>% ggplot() +
 
 data_long_1 <- subset(data_long, aoi != "Null")
 
-data_long_1 %>% ggplot() +
+data_long_1 |> ggplot() +
   aes(x = scenario_id, y = measurement * 100, fill = aoi, colour = aoi, group = aoi) +
   scale_colour_see() +
   ylab("Percentage Fixation - Excluded Null") +
@@ -1024,14 +1026,14 @@ data_long_1 %>% ggplot() +
   stat_summary(fun = mean, geom = "line", size = 1, aes(linetype = aoi), alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = .05)) +
   scale_x_discrete(labels = c("SCENARIO_2" = "With eHMI", "SCENARIO_4" = "Without eHMI"))
-# ggsave("plots/Fixation_without_null.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+# ggsave("plots/Fixation_without_null.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 # remove when was not visible
 data_long_1 <- subset(data_long_1, subset = measurement != 0)
 
 
-data_long_1 %>% ggplot() +
+data_long_1 |> ggplot() +
   aes(x = scenario_id, y = measurement * 100, colour = aoi, group = aoi) +
   scale_colour_see() +
   ylab("Percentage Fixation  Excluded Null") +
@@ -1043,4 +1045,170 @@ data_long_1 %>% ggplot() +
   stat_summary(fun = mean, geom = "line", size = 1, aes(linetype = aoi), alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = .05)) +
   scale_x_discrete(labels = c("SCENARIO_2" = "With eHMI", "SCENARIO_4" = "Without eHMI"))
-# ggsave("plots/Fixation_without_null_no_zero.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+# ggsave("plots/Fixation_without_null_no_zero.pdf", width = 12, height = 9, device = cairo_pdf)
+
+
+
+
+ ## Position: Repeated Exposure One - Line Diagram ##
+options(digits.secs = 4)
+repeatedExp_ld_usa <- df_position_usa$rep_exposure
+subjectID_ld_usa <- df_position_usa$subject_id
+condition_id_ld <- df_position_usa$condition_id
+xPos_round_ld_usa <- round(df_position_usa$x_position, digits = 2)
+zPos_round_ld_usa <- round(df_position_usa$z_position, digits = 2)
+total_duration_calc_ld_usa <- df_position_usa$total_duration_calc
+mp_reduced_ld_usa <- data.frame(xPos_round_ld_usa, zPos_round_ld_usa, repeatedExp_ld_usa, subjectID_ld_usa, condition_id_ld)
+
+## USA Scenario_2
+mp_filtered_ld_usa_SC1_One <- filter(mp_reduced_ld_usa, xPos_round_ld_usa > 92.5 & repeatedExp_ld_usa == "ONE" & condition_id_ld == "SCENARIO_2")
+mp_filtered_ld_usa_SC1_One |> ggplot() +
+  geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
+  aes(x = xPos_round_ld_usa, y = zPos_round_ld_usa, color = factor(subjectID_ld_usa), fill = subjectID_ld_usa, group = subjectID_ld_usa) +
+  scale_color_see() +
+  geom_path() +
+  ggtitle("Scenario 1: with eHMI & USA") +
+  theme(
+    legend.position = "", axis.text.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks = element_blank(), plot.title = element_text(hjust = 0.5)
+  ) +
+  scale_y_reverse() +
+  geom_hline(yintercept = 168.78, color = "#A9A9A9") + # curb-start on starting point
+  geom_hline(yintercept = 167, color = "#A9A9A9") + # curb-END on starting point
+  geom_hline(yintercept = 163.62, linetype = "dashed", color = "#A9A9A9") + # median
+  geom_hline(yintercept = 160.24, color = "#A9A9A9") + # curb-start at park
+  geom_hline(yintercept = 158.54, color = "#A9A9A9") +
+  xlab("Repeated Exposure: One") +
+  ylab("Walking Direction →")
+ggsave("plots/result_walking_behavior_sc2_rep1_usa.pdf", width = 12, height = 9, device = cairo_pdf)
+
+
+mp_filtered_ld_usa_SC2_One <- filter(mp_reduced_ld_usa, xPos_round_ld_usa > 92.5 & zPos_round_ld_usa > 157.8 & repeatedExp_ld_usa == "ONE" & condition_id_ld == "SCENARIO_4")
+mp_filtered_ld_usa_SC2_One |> ggplot() +
+  # geom_circle(aes(x0 = 92.95, y0 = 158.24, r = 2)) +
+  geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
+  aes(x = xPos_round_ld_usa, y = zPos_round_ld_usa, color = factor(subjectID_ld_usa), fill = subjectID_ld_usa, group = subjectID_ld_usa) +
+  geom_path() +
+  scale_color_see() +
+  ggtitle("Scenario 2: without eHMI & USA") +
+  theme(
+    legend.position = "", axis.text.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks = element_blank(), plot.title = element_text(hjust = 0.5)
+  ) +
+  scale_y_reverse() +
+  geom_hline(yintercept = 168.78, color = "#A9A9A9") + # curb-start on starting point
+  geom_hline(yintercept = 167, color = "#A9A9A9") + # curb-END on starting point
+  geom_hline(yintercept = 163.62, linetype = "dashed", color = "#A9A9A9") + # median
+  geom_hline(yintercept = 160.24, color = "#A9A9A9") + # curb-start at park
+  geom_hline(yintercept = 158.54, color = "#A9A9A9") +
+  xlab("Repeated Exposure: One") +
+  ylab("Walking Direction →")
+ggsave("plots/result_walking_behavior_sc4_rep1_usa.pdf", width = 12, height = 9, device = cairo_pdf)
+
+
+mp_filtered_ld_usa_SC1_Two <- filter(mp_reduced_ld_usa, zPos_round_ld_usa > 157.8 & repeatedExp_ld_usa == "TWO" & condition_id_ld == "SCENARIO_2")
+mp_filtered_ld_usa_SC1_Two |> ggplot() +
+
+  # geom_circle(aes(x0 = 92.95, y0 = 158.24, r = 2)) +
+  geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
+  aes(x = xPos_round_ld_usa, y = zPos_round_ld_usa, color = factor(subjectID_ld_usa), fill = subjectID_ld_usa, group = subjectID_ld_usa) +
+  geom_path() +
+  ggtitle("Scenario 1: with eHMI & USA") +
+  theme(
+    legend.position = "", axis.text.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks = element_blank(), plot.title = element_text(hjust = 0.5)
+  ) +
+  scale_y_reverse() +
+  scale_color_see() +
+  geom_hline(yintercept = 168.78, color = "#A9A9A9") + # curb-start on starting point
+  geom_hline(yintercept = 167, color = "#A9A9A9") + # curb-END on starting point
+  geom_hline(yintercept = 163.62, linetype = "dashed", color = "#A9A9A9") + # median
+  geom_hline(yintercept = 160.24, color = "#A9A9A9") + # curb-start at park
+  geom_hline(yintercept = 158.54, color = "#A9A9A9") +
+  xlab("Repeated Exposure: Two") +
+  ylab("Walking Direction →")
+ggsave("plots/result_walking_behavior_sc2_rep2_usa.pdf", width = 12, height = 9, device = cairo_pdf)
+
+
+mp_filtered_ld_usa_SC2_Two <- filter(mp_reduced_ld_usa, zPos_round_ld_usa > 157.8 & repeatedExp_ld_usa == "TWO" & condition_id_ld == "SCENARIO_4")
+mp_filtered_ld_usa_SC2_Two |> ggplot() +
+
+  # geom_circle(aes(x0 = 92.95, y0 = 158.24, r = 2)) +
+  geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
+  aes(x = xPos_round_ld_usa, y = zPos_round_ld_usa, color = factor(subjectID_ld_usa), fill = subjectID_ld_usa, group = subjectID_ld_usa) +
+  geom_path() +
+  ggtitle("Scenario 2: without eHMI & USA") +
+  theme(
+    legend.position = "", axis.text.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks = element_blank(), plot.title = element_text(hjust = 0.5)
+  ) +
+  scale_y_reverse() +
+  scale_color_see() +
+  geom_hline(yintercept = 168.78, color = "#A9A9A9") + # curb-start on starting point
+  geom_hline(yintercept = 167, color = "#A9A9A9") + # curb-END on starting point
+  geom_hline(yintercept = 163.62, linetype = "dashed", color = "#A9A9A9") + # median
+  geom_hline(yintercept = 160.24, color = "#A9A9A9") + # curb-start at park
+  geom_hline(yintercept = 158.54, color = "#A9A9A9") +
+  xlab("Repeated Exposure: Two") +
+  ylab("Walking Direction →")
+ggsave("plots/result_walking_behavior_sc4_rep2_usa.pdf", width = 12, height = 9, device = cairo_pdf)
+
+
+
+mp_filtered_ld_usa_SC1_Three <- filter(mp_reduced_ld_usa, repeatedExp_ld_usa == "THREE" &
+  condition_id_ld == "SCENARIO_2" &
+  subjectID_ld_usa == "8f0b5705-a485-4743-9e1c-8790cad22f64")
+
+mp_filtered_ld_usa_SC1_Three <- filter(mp_reduced_ld_usa, repeatedExp_ld_usa == "THREE" & zPos_round_ld_usa > 157.8 &
+  condition_id_ld == "SCENARIO_2" & subjectID_ld_usa != "8f0b5705-a485-4743-9e1c-8790cad22f64" & subjectID_ld_usa != "32de6da0-401d-4cdb-9fbc-e831a21db71a")
+mp_filtered_ld_usa_SC1_Three |> ggplot() +
+
+  #  geom_circle(aes(x0 = 92.95, y0 = 158.24, r = 2)) +
+  geom_rect(aes(xmin = 92.5, xmax = 94.5, ymin = 158.29, ymax = 160.29), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
+  aes(x = xPos_round_ld_usa, y = zPos_round_ld_usa, color = factor(subjectID_ld_usa), fill = subjectID_ld_usa, group = subjectID_ld_usa) +
+  geom_path() +
+  ggtitle("Scenario 1: with eHMI & USA") +
+  theme(
+    legend.position = "", axis.text.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks = element_blank(), plot.title = element_text(hjust = 0.5)
+  ) +
+  scale_y_reverse() +
+  scale_color_see() +
+  geom_hline(yintercept = 168.78, color = "#A9A9A9") + # curb-start on starting point
+  geom_hline(yintercept = 167, color = "#A9A9A9") + # curb-END on starting point
+  geom_hline(yintercept = 163.62, linetype = "dashed", color = "#A9A9A9") + # median
+  geom_hline(yintercept = 160.24, color = "#A9A9A9") + # curb-start at park
+  geom_hline(yintercept = 158.54, color = "#A9A9A9") +
+  xlab("Repeated Exposure: Three") +
+  ylab("Walking Direction →")
+ggsave("plots/result_walking_behavior_sc2_rep3_usa.pdf", width = 12, height = 9, device = cairo_pdf)
+
+
+# mp_filtered_ld_usa_SC2_Three <- filter(mp_reduced_ld_usa, xPos_round_ld_usa < 96 & xPos_round_ld_usa > 92.5  & zPos_round_ld_usa > 157.8
+#                                 & repeatedExp_ld_usa == 'TWO' & condition_id_ld == "SCENARIO_4")
+mp_filtered_ld_usa_SC2_Three <- filter(mp_reduced_ld_usa, repeatedExp_ld_usa == "THREE" & condition_id_ld == "SCENARIO_4" &
+  subjectID_ld_usa != "a2467bc7-59c2-4f1f-9499-588aff62b76c")
+mp_filtered_ld_usa_SC2_Three |> ggplot() +
+
+  # geom_circle(aes(x0 = 92.95, y0 = 158.24, r = 2)) +
+  geom_rect(aes(xmin = 90.5, xmax = 94.5, ymin = 158.29, ymax = 160.4), color = NA, fill = "#F0F8FF", alpha = 1) + # Checkpoint
+  aes(x = xPos_round_ld_usa, y = zPos_round_ld_usa, color = factor(subjectID_ld_usa), fill = subjectID_ld_usa, group = subjectID_ld_usa) +
+  geom_path() +
+  ggtitle("Scenario 2: without eHMI & USA") +
+  theme(
+    legend.position = "", axis.text.x = element_blank(),
+    axis.text.y = element_blank(), axis.ticks = element_blank(), plot.title = element_text(hjust = 0.5)
+  ) +
+  scale_y_reverse() +
+  scale_color_see() +
+  geom_hline(yintercept = 168.78, color = "#A9A9A9") + # curb-start on starting point
+  geom_hline(yintercept = 167, color = "#A9A9A9") + # curb-END on starting point
+  geom_hline(yintercept = 163.62, linetype = "dashed", color = "#A9A9A9") + # median
+  geom_hline(yintercept = 160.24, color = "#A9A9A9") + # curb-start at park
+  geom_hline(yintercept = 158.54, color = "#A9A9A9") +
+  xlab("Repeated Exposure: Three") +
+  ylab("Walking Direction →")
+ggsave("plots/result_walking_behavior_sc4_rep3_usa.pdf", width = 12, height = 9, device = cairo_pdf)
+
+# Position Checkpoint xPos = 92.95 || zPos = 158.29                                      
+                                       
