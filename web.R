@@ -11,6 +11,8 @@ if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable())
 }
 
 
+library(easystats)
+
 library(colleyRstats)
 colleyRstats::colleyRstats_setup()
 
@@ -352,14 +354,14 @@ main_df_web$repExposure <- as.factor(main_df_web$repExposure)
 
 
 ##### Mental Workload #####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "TLX1", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "TLX1", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(TLX1 ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "mental workload")
 d <- dunnTest(TLX1 ~ repExposure, data = main_df_web, method = "holm", two.sided = FALSE)
 reportDunnTest(data = main_df_web, d = d, iv = "repExposure", dv = "TLX1")
 
 
-main_df_web %>% ggplot() +
+main_df_web |> ggplot() +
   aes(x = culturalBackground, y = TLX1, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_colour_see() +
   ylab("Mental Workload") +
@@ -369,7 +371,7 @@ main_df_web %>% ggplot() +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
 
-p <- main_df_web %>% ggplot() +
+p <- main_df_web |> ggplot() +
   aes(x = repExposure, y = TLX1, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_color_see() +
   ylab("Mental Workload") +
@@ -379,24 +381,24 @@ p <- main_df_web %>% ggplot() +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
 p + facet_grid(~culturalBackground)
-ggsave("plots/result_web_ger_us_tlx1.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_ger_us_tlx1.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
 ##### overallTiAUnderstanding#####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "overallTiAUnderstanding", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "overallTiAUnderstanding", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(overallTiAUnderstanding ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "overallTiAUnderstanding")
 reportMeanAndSD(data = main_df_web, iv = "ehmi", dv = "overallTiAUnderstanding")
 
 ##### overallTiATrust#####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "overallTiATrust", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "overallTiATrust", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(overallTiATrust ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "overallTiATrust")
 reportMeanAndSD(data = main_df_web, iv = "ehmi", dv = "overallTiATrust")
 
 ##### PerceivedSafety #####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "ps_score", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "ps_score", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(ps_score ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "ps_score")
 
@@ -445,27 +447,27 @@ ggplot(data.cd, aes(ymax = ymax, ymin = ymin, xmax = 4, xmin = 3, fill = decisio
   theme(legend.position = "none", text = element_text(family = "sans"))
 
 ##### Crossing Decision: Speed#####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "crossingDecisionSpeed", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "crossingDecisionSpeed", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(crossingDecisionSpeed ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "crossingDecisionSpeed")
 
 ##### Crossing Decision: Distance#####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "crossingDecisionDist", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "crossingDecisionDist", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(crossingDecisionDist ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "crossingDecisionDist")
 
 ##### Crossing Decision: Communication#####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "crossingDecisionComm", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "crossingDecisionComm", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(crossingDecisionComm ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "crossingDecisionComm")
 reportMeanAndSD(data = main_df_web, iv = "ehmi", dv = "crossingDecisionComm")
 
 ##### Crossing Decision: Own waiting Time#####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "crossingDecisionOwt", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "crossingDecisionOwt", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(crossingDecisionOwt ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "crossingDecisionOwt")
 
-main_df_web %>% ggplot() +
+main_df_web |> ggplot() +
   aes(x = repExposure, y = crossingDecisionOwt, fill = culturalBackground, colour = culturalBackground, group = culturalBackground) +
   scale_colour_see() +
   ylab("Crossing Decision\nOwn Waiting Time") +
@@ -474,12 +476,12 @@ main_df_web %>% ggplot() +
   stat_summary(fun = mean, geom = "point", size = 4.0) +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
-ggsave("plots/result_web_cd_owt_ger_usa.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_cd_owt_ger_usa.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
 
-p <- main_df_web %>% ggplot() +
+p <- main_df_web |> ggplot() +
   aes(x = repExposure, y = crossingDecisionOwt, fill = ehmi, colour = ehmi, group = ehmi) +
   scale_color_see() +
   ylab("Crossing Decision\nOwn Waiting Time") +
@@ -489,55 +491,631 @@ p <- main_df_web %>% ggplot() +
   stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
   stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
 p + facet_grid(~culturalBackground)
-ggsave("plots/result_web_cd_owt_ger_usa2.pdf", width = pdfwidth, height = pdfheight + 2, device = cairo_pdf)
+ggsave("plots/result_web_cd_owt_ger_usa2.pdf", width = 12, height = 9, device = cairo_pdf)
 
 
 
 ##### Presence#####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "presence", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "presence", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(presence ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "presence")
 
 ##### pragmatic_quality #####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "pragmatic_quality", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "pragmatic_quality", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(pragmatic_quality ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "pragmatic quality")
 reportMeanAndSD(data = main_df_web, iv = "ehmi", dv = "pragmatic_quality")
 
 ##### hedonic_quality#####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "hedonic_quality", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "hedonic_quality", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(hedonic_quality ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "hedonic quality")
 
 ##### ComEval #####
 ###### comEval2 Polite | Impolite ######
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "comEval2", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "comEval2", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(comEval2 ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "comEval2")
 
 ###### comEval3 Machine-like ######
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "comEval3", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "comEval3", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(comEval3 ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "comEval3")
 
 ###### comEval4 Not clear######
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "comEval4", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "comEval4", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(comEval4 ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "comEval4")
 reportMeanAndSD(data = main_df_web, iv = "ehmi", dv = "comEval4")
 
 ###### comEval5 Naturalness######
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "comEval5", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "comEval5", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(comEval5 ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "comEval5")
 
 ###### comEval6######
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "comEval6", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "comEval6", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(comEval5 ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "comEval6")
 
 ##### comEval6 Appropriateness #####
-checkAssumptionsForAnovaThreeFactors(data = main_df_web, y = "comEval6", factor_1 = "culturalBackground", factor_2 = "ehmi", factor_3 = "repExposure")
+checkAssumptionsForAnova(data = main_df_web, y = "comEval6", factors = c("culturalBackground", "ehmi", "repExposure"))
 modelART <- art(comEval6 ~ culturalBackground * ehmi * repExposure + Error(probandenID / (ehmi * repExposure)), data = main_df_web) |> anova()
 reportART(model = modelART, dv = "comEval6")
 reportMeanAndSD(data = main_df_web, iv = "ehmi", dv = "comEval6")
+
+
+
+
+
+
+
+
+library(bayestestR)
+
+#### Germany: VR-Study & Online-Based ####
+##### Mental Workload #####
+anovaBF(TLX1 ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "TLX1")
+
+anovaBF(TLX1 ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = TLX1, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Mental Workload") +
+  theme(legend.position.inside = c(0.75, 0.84)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+anovaBF(TLX1 ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = TLX1, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Mental Workload") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.75, 0.9)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+
+##### overallTiAUnderstanding #####
+anovaBF(overallTiAUnderstanding ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(overallTiAUnderstanding ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(overallTiAUnderstanding ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = overallTiAUnderstanding, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Understanding") +
+  theme(legend.position.inside = c(0.3, 0.84)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = overallTiAUnderstanding, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Understanding") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.27, 0.9)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+##### overallTiATrust#####
+anovaBF(overallTiATrust ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(overallTiATrust ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = overallTiATrust, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Trust") +
+  theme(legend.position.inside = c(0.3, 0.84)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = overallTiATrust, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Trust") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.27, 0.9)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+##### ps_score #####
+anovaBF(ps_score ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(ps_score ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = ps_score, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Perceived Safety") +
+  theme(legend.position.inside = c(0.3, 0.84)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = ps_score, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Perceived Safety") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.27, 0.9)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+##### Crossing Decision: Speed#####
+anovaBF(crossingDecisionSpeed ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "crossingDecisionSpeed")
+anovaBF(crossingDecisionSpeed ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(crossingDecisionSpeed ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = crossingDecisionSpeed, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Crossing Decision\nSpeed") +
+  theme(legend.position.inside = c(0.3, 0.84)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = crossingDecisionSpeed, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Crossing Decision\nSpeed") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.2, 0.95)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+##### Crossing Decision: Distance#####
+anovaBF(crossingDecisionDist ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "crossingDecisionDist")
+anovaBF(crossingDecisionDist ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(crossingDecisionDist ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = crossingDecisionDist, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Crossing Decision\nDistance") +
+  theme(legend.position.inside = c(0.7, 0.25)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = crossingDecisionDist, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Crossing Decision\nDistance") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.25, 0.25)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+##### Crossing Decision: Communication#####
+anovaBF(crossingDecisionComm ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "crossingDecisionComm")
+anovaBF(crossingDecisionComm ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(crossingDecisionComm ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = crossingDecisionComm, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Crossing Decision\nCommunication") +
+  theme(legend.position.inside = c(0.7, 0.25)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = crossingDecisionComm, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Crossing Decision\nCommunication") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.25, 0.85)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+##### Crossing Decision: Own waiting Time#####
+anovaBF(crossingDecisionOwt ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "crossingDecisionOwt")
+anovaBF(crossingDecisionOwt ~ ehmi * study, whichRandom = "crossingDecisionOwt", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(crossingDecisionOwt ~ repExposure * study, whichRandom = "crossingDecisionOwt", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = crossingDecisionOwt, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Crossing Decision\nOwn Waiting Time") +
+  theme(legend.position.inside = c(0.7, 0.1)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = crossingDecisionOwt, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Crossing Decision\nOwn Waiting Time") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.75, 0.85)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+#### Presence#####
+anovaBF(presence ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "presence")
+anovaBF(presence ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(presence ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = presence, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Presence") +
+  theme(legend.position.inside = c(0.25, 0.1)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = presence, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Presence") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.5, 0.85)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+##### pragmatic_quality #####
+anovaBF(pragmatic_quality ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "pragmatic_quality")
+anovaBF(pragmatic_quality ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(pragmatic_quality ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = pragmatic_quality, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Pragmatic Quality") +
+  theme(legend.position.inside = c(0.25, 0.75)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = pragmatic_quality, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Pragmatic Quality") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.25, 0.93)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+##### hedonic_quality#####
+anovaBF(hedonic_quality ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "hedonic_quality")
+anovaBF(hedonic_quality ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(hedonic_quality ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = hedonic_quality, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Hedonic Quality") +
+  theme(legend.position.inside = c(0.25, 0.85)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = hedonic_quality, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Hedonic Quality") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.25, 0.93)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+##### comEval2 Politness#####
+anovaBF(comEval2 ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "comEval2")
+anovaBF(comEval2 ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(comEval2 ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = comEval2, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Politeness") +
+  theme(legend.position.inside = c(0.75, 0.9)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = comEval2, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Politeness") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.75, 0.85)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+##### comEval3 Machine-Like#####
+anovaBF(comEval3 ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "comEval3")
+anovaBF(comEval3 ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(comEval3 ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = comEval3, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Machine-Likness") +
+  theme(legend.position.inside = c(0.75, 0.9)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = comEval3, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Machine-Likness") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.25, 0.85)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+##### comEval4 clear#####
+anovaBF(comEval4 ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "comEval4")
+anovaBF(comEval4 ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(comEval4 ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = comEval4, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Clear") +
+  theme(legend.position.inside = c(0.25, 0.9)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = comEval4, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Clear") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.25, 0.85)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+##### comEval5 Naturalness#####
+anovaBF(comEval5 ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "comEval5")
+anovaBF(comEval5 ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(comEval5 ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = comEval5, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Naturalness") +
+  theme(legend.position.inside = c(0.25, 0.9)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = comEval5, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Naturalness ") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.25, 0.85)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+##### comEval6 appropriateness#####
+anovaBF(comEval6 ~ study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+reportMeanAndSD(data = main_df_german, iv = "study", dv = "comEval6")
+anovaBF(comEval6 ~ ehmi * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+anovaBF(comEval6 ~ repExposure * study, whichRandom = "probandenID", data = main_df_german) |>
+  bayesfactor_models() |>
+  report()
+main_df_german |> ggplot() +
+  aes(x = study, y = comEval6, fill = ehmi, colour = ehmi, group = ehmi) +
+  scale_color_see() +
+  ylab("Appropriateness") +
+  theme(legend.position.inside = c(0.25, 0.9)) +
+  xlab("Study Designs") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  scale_x_discrete(labels = c("WEB" = "Online-Based", "VR" = "VR")) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+temp <- main_df_german
+temp$study <- gsub("WEB", "Online-Based", temp$study)
+temp |> ggplot() +
+  aes(x = repExposure, y = comEval6, fill = study, colour = study, group = study) +
+  scale_color_see() +
+  ylab("Appropriateness ") +
+  # scale_fill_discrete(labels=c("WEB" = "Online-Based", "VR" = "VR")) +
+  theme(legend.position.inside = c(0.25, 0.25)) +
+  xlab("Repeated Expsoure") +
+  stat_summary(fun = mean, geom = "point", size = 4.0) +
+  stat_summary(fun = mean, geom = "line", linewidth = 1, alpha = 0.5) +
+  stat_summary(fun.data = "mean_cl_boot", geom = "errorbar", width = .25, position = position_dodge(width = 0.05))
+
+
+
+
