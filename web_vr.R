@@ -1,5 +1,7 @@
 # first: kornmueller_web.R
 
+library(bayestestR)
+
 #### Germany: VR-Study & Online-Based ####
 ##### Mental Workload #####
 anovaBF(TLX1 ~ study, whichRandom = "probandenID", data = main_df_german) |>
