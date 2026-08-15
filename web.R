@@ -1,12 +1,19 @@
 # setwd("/Users/daniel/Documents/Daten_DK/masterthesis/results/")
 
-library("rstudioapi")
-setwd(dirname(getActiveDocumentContext()$path))
+if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable()) {
+  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+} else {
+  args <- commandArgs(trailingOnly = FALSE)
+  file_arg <- grep("^--file=", args, value = TRUE)
+  if (length(file_arg) > 0) {
+    setwd(dirname(normalizePath(sub("^--file=", "", file_arg))))
+  }
+}
 
 
-library(devtools)
-source_url("https://raw.githubusercontent.com/M-Colley/rCode/main/r_functionality.R")
-# install.packages('BayesFactor')
+library(colleyRstats)
+colleyRstats::colleyRstats_setup()
+
 library(BayesFactor)
 
 #### VR-IMPORT GERMAN SUBJECTS #####
